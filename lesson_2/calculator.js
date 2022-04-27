@@ -28,6 +28,7 @@ if (operation === '1') {
 } else if (operation === '4') {
   result = Number(num1) / Number(num2);
 }
+
 // Print the  result to the terminal.
 console.log(`You typed ${num1} and ${num2} both of which are type ${typeof num1}`);
 
