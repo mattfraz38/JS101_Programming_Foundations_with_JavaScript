@@ -39,9 +39,6 @@
 // -----------------------------------------------------
 // START
 
-// a function that takes an array of strings, and returns a 
-// string that is all those strings concatenated together
-
 // SET result = null
 // SET counter = 0
 
@@ -76,11 +73,6 @@
 // 3. Formal Pseudocode
 // -----------------------------------------------------
 // START
-
-// a method that takes an array of integers, and returns a new
-// array with every other element from the original array,
-// starting with the first element. For instance:
-// everyOther([1,4,7,2,5]); // => [1,7,5]
 
 // SET result = []
 // SET counter = 0
@@ -125,13 +117,6 @@
 // -----------------------------------------------------
 // START
 
-// a function that determines the index of the 3rd occurrence
-// of a given character in a string. For instance, if the
-// given character is 'x' and the string is 'axbxcdxex', the
-// function should return 6 (the index of the 3rd 'x'). If the
-// given character does not occur at least 3 times, 
-// return null.
-
 // SET counter = 0
 // SET index = 0
 
@@ -152,3 +137,47 @@
 //  - PRINT null
 
 // END
+
+// -----------------------------------------------------
+// 5. Pseudocode
+// -----------------------------------------------------
+// a function that takes two arrays of numbers and returns 
+// the result of merging the arrays. The elements of the 
+// first array should become the elements at the even 
+// indexes of the returned array, while the elements of 
+// the second array should become the elements at the odd 
+// indexes. For instance:
+
+// merge([1, 2, 3], [4, 5, 6]); // => [1, 4, 2, 5, 3, 6]
+// You may assume that both array arguments have the 
+// same number of elements.
+
+// Create an array called result
+
+// Create a counter variable and set it to zero
+
+// Create a loop while the counter variable is less than
+// the length equal of the first array plus the length of
+// the second array
+//  - If the counter is even destructively push the array
+//    element of the first array to the results array
+//  - Else destructively push array element of the second
+//    array to the results array
+//  - Increase the counter by one
+
+//  Return the result array
+
+// -----------------------------------------------------
+// 5. Formal Pseudocode
+// -----------------------------------------------------
+// START
+// SET result = []
+// SET a counter = 0
+// WHILE counter < first array length + second array length
+//  - IF counter % 2 === 0
+//    - PUSH to result the return value of shifting the 
+//      first array value  
+//  - ELSE PUSH to result the return value of shifting the 
+//    second array value
+// PRINT result
+//END
