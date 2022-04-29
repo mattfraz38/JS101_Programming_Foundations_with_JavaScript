@@ -1,17 +1,17 @@
 // To utilize the node debugger use the inspect command:
 // node inspect path/to/file
 
-// Debugger automatically pauses execution at the first 
+// Debugger automatically pauses execution at the first
 // expression or function call and is denoted with >
 
 // You can access variables by typing:
 // exec variableName
 
-// Cycle execution to the next expression or function 
+// Cycle execution to the next expression or function
 // call type: n or next
 
 // Unpause and continue program execution type: c or cont
-// Pause execution at a specific location in the program 
+// Pause execution at a specific location in the program
 // code add: debugger; and run the program with inspect
 
 // After the program finished the debugger prompt will remain
