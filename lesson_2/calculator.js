@@ -1,5 +1,11 @@
 const rlSync = require('readline-sync');
 const MESSAGES = require('./calculator_messages.json');
+const LANGUAGE = 'en';
+
+// Set JSON messages with a language key
+function messages(message, lang = 'en') {
+  return MESSAGES[lang][message];
+}
 
 // Prompt function to show distinctive separations in output
 function prompt(message) {
@@ -11,36 +17,53 @@ function invalidNumber(number) {
   return number.trimStart() === '' || Number.isNaN(Number(number));
 }
 
-let newCalculation = true;
+// Prompt user for a language
+prompt('1) English 2) 日本語: ');
+let lang = rlSync.question();
 
-prompt(MESSAGES['welcome']);
+// Continue asking for input until 1 or 2 selected
+while (!['1', '2'].includes(lang)) {
+  prompt(messages('invalidNum', LANGUAGE));
+  lang = rlSync.question();
+}
+
+// Set language
+if (lang === '2') {
+  lang = 'ja';
+} else {
+  lang = 'en';
+}
+
+prompt(messages('welcome', lang));
+
+let newCalculation = true;
 
 // Do the calculations then ask user if want to do another
 do {
   // Ask the user for the first number.
-  prompt(MESSAGES['firstNum']);
+  prompt(messages('firstNum', lang));
   let num1 = rlSync.question();
 
   while (invalidNumber(num1)) {
-    prompt(MESSAGES['invalidNum']);
+    prompt(messages('invalidNum', lang));
     num1 = rlSync.question();
   }
 
   // Ask the user for the second number.
-  prompt(MESSAGES['secondNum']);
+  prompt(messages('secondNum', lang));
   let num2 = rlSync.question();
 
   while (invalidNumber(num2)) {
-    prompt(MESSAGES['invalidNum']);
+    prompt(messages('invalidNum', lang));
     num2 = rlSync.question();
   }
 
   // Ask the user for an operation to perform.
-  prompt(MESSAGES['operation']);
+  prompt(messages('operation', lang));
   let operation = rlSync.question();
 
   while (!['1', '2', '3', '4'].includes(operation)) {
-    prompt(MESSAGES['invalidOperation']);
+    prompt(messages('invalidOperation', lang));
     operation = rlSync.question();
   }
 
@@ -65,14 +88,14 @@ do {
   prompt(`You typed ${num1} and ${num2}`);
   prompt(`The result is: ${result}`);
 
-  prompt(MESSAGES['newCalculation']);
+  prompt(messages('newCalculation', lang));
   let response = rlSync.question();
 
   if (response[0].toLowerCase() === 'y') {
     console.log('-'.repeat(50));
     continue;
   } else {
-    prompt(MESSAGES['goodbye']);
+    prompt(messages('goodbye', lang));
     newCalculation = false;
   }
 

@@ -1,10 +1,22 @@
 {
-  "welcome": "Welcome to Calculator!",
-  "firstNum": "What's the first number?",
-  "secondNum": "What's the second number?",
-  "invalidNum": "Error! Input must be a number.",
-  "operation": "What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide",
-  "invalidOperation": "Error!: Must choose 1, 2, 3, or 4",
-  "newCalculation": "Do another calculation? (Yes/n)",
-  "goodbye": "Goodbye!"
+  "en": {
+    "welcome": "Welcome to Calculator!",
+    "firstNum": "What's the first number?",
+    "secondNum": "What's the second number?",
+    "invalidNum": "Error! Input must be a number.",
+    "operation": "What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "invalidOperation": "Error! Must choose 1, 2, 3, or 4",
+    "newCalculation": "Do another calculation? (Yes/n)",
+    "goodbye": "Goodbye!"
+  },
+  "ja": {
+    "welcome": "電卓へようこそ！",
+    "firstNum": "第一の数字を入力してください",
+    "secondNum": "第二の数字を入力してください",
+    "invalidNum": "エラー！数字を入力してください！",
+    "operation": "演算を選んでください。\n1) 足し算 2) 引き算 3) かけ算 4) 割り算",
+    "invalidOperation": "エラー！ 1, 2, 3, 4 から選んでください！",
+    "newCalculation": "続けますか？ (Yes/n)",
+    "goodbye": "バイバイ!"
+  }
 }
