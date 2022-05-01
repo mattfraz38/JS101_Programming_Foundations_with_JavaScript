@@ -1,4 +1,5 @@
 const rlSync = require('readline-sync');
+const MESSAGES = require('./calculator_messages.json');
 
 // Prompt function to show distinctive separations in output
 function prompt(message) {
@@ -12,34 +13,34 @@ function invalidNumber(number) {
 
 let newCalculation = true;
 
+prompt(MESSAGES['welcome']);
+
 // Do the calculations then ask user if want to do another
 do {
-  prompt('Welcome to Calculator!');
-
   // Ask the user for the first number.
-  prompt("What's the first number?");
+  prompt(MESSAGES['firstNum']);
   let num1 = rlSync.question();
 
   while (invalidNumber(num1)) {
-    prompt("Error! Input must be a number.");
+    prompt(MESSAGES['invalidNum']);
     num1 = rlSync.question();
   }
 
   // Ask the user for the second number.
-  prompt("What's the second number?");
+  prompt(MESSAGES['secondNum']);
   let num2 = rlSync.question();
 
   while (invalidNumber(num2)) {
-    prompt("Error! Input must be a number.");
+    prompt(MESSAGES['invalidNum']);
     num2 = rlSync.question();
   }
 
   // Ask the user for an operation to perform.
-  prompt('What operation would you liek to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide');
+  prompt(MESSAGES['operation']);
   let operation = rlSync.question();
 
   while (!['1', '2', '3', '4'].includes(operation)) {
-    prompt('Error!: Must choose 1, 2, 3, or 4');
+    prompt(MESSAGES['invalidOperation']);
     operation = rlSync.question();
   }
 
@@ -64,14 +65,14 @@ do {
   prompt(`You typed ${num1} and ${num2}`);
   prompt(`The result is: ${result}`);
 
-  prompt('Do another calculation? (Yes/n)');
+  prompt(MESSAGES['newCalculation']);
   let response = rlSync.question();
 
   if (response[0].toLowerCase() === 'y') {
     console.log('-'.repeat(50));
     continue;
   } else {
-    prompt('Goodbye!');
+    prompt(MESSAGES['goodbye']);
     newCalculation = false;
   }
 
