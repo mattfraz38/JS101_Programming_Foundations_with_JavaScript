@@ -18,6 +18,14 @@ const invalidLoanDuration = input => {
     (input === Number.NEGATIVE_INFINITY);
 };
 
+const invalidAPR = input => {
+  return (typeof input !== 'number') ||
+    (input < 0) ||
+    (Number.isNaN(input)) ||
+    (input === Number.POSITIVE_INFINITY) ||
+    (input === Number.NEGATIVE_INFINITY);
+};
+
 // Get loan amount
 let loanAmount = Number(rlSync.question("Loan amount: "));
 
@@ -26,7 +34,7 @@ while (invalidLoan(loanAmount)) {
   loanAmount = Number(rlSync.question("Loan amount: "));
 }
 
-// // Get loan month duration
+// Get loan month duration
 let loanMonths = Number(rlSync.question("Loan months: "));
 
 while ((invalidLoanDuration(loanMonths))) {
@@ -34,4 +42,12 @@ while ((invalidLoanDuration(loanMonths))) {
   loanMonths = Number(rlSync.question("Loan months: "));
 }
 
-console.log(`Loan amount = ${loanAmount}.\nLoan months = ${loanMonths}.`);
+// Get loan APR
+let apr = Number(rlSync.question("APR: "));
+
+while (invalidAPR(apr)) {
+  console.log('Error! Invalid APR!');
+  apr = Number(rlSync.question("APR: "));
+}
+
+console.log(`Loan amount = ${loanAmount}.\nLoan months = ${loanMonths}.\nAPR: ${apr}%.`);
