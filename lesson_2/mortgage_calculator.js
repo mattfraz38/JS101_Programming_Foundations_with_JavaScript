@@ -9,10 +9,10 @@ const invalidLoan = input => {
     (input === Number.NEGATIVE_INFINITY);
 };
 
-// Validate loan years
-const invalidLoanYears = input => {
+// Validate loan duration
+const invalidLoanDuration = input => {
   return (!Number.isInteger(input)) ||
-    (input < 0) ||
+    (input <= 0) ||
     (Number.isNaN(input)) ||
     (input === Number.POSITIVE_INFINITY) ||
     (input === Number.NEGATIVE_INFINITY);
@@ -26,12 +26,12 @@ while (invalidLoan(loanAmount)) {
   loanAmount = Number(rlSync.question("Loan amount: "));
 }
 
-// Get loan year duration
-let loanYears = Number(rlSync.question("Loan years: "));
+// // Get loan month duration
+let loanMonths = Number(rlSync.question("Loan months: "));
 
-while (invalidLoanYears(loanYears)) {
-  console.log('Error! Invalid year duration!');
-  loanYears = Number(rlSync.question("Loan years: "));
+while ((invalidLoanDuration(loanMonths))) {
+  console.log('Error! Invalid month duration');
+  loanMonths = Number(rlSync.question("Loan months: "));
 }
 
-console.log(`Loan amount = ${loanAmount}. Loan years = ${loanYears}.`);
+console.log(`Loan amount = ${loanAmount}.\nLoan months = ${loanMonths}.`);
