@@ -50,4 +50,6 @@ while (invalidAPR(apr)) {
   apr = Number(rlSync.question("APR: "));
 }
 
-console.log(`Loan amount = ${loanAmount}.\nLoan months = ${loanMonths}.\nAPR: ${apr}%.`);
+let monthlyInterestRate = (apr / 100) / loanMonths;
+
+console.log(`Loan amount = ${loanAmount}.\nLoan months = ${loanMonths}.\nAPR: ${apr}%.\nMonthly interest rate: ${monthlyInterestRate}`);
