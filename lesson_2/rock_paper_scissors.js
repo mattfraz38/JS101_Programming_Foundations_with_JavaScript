@@ -6,10 +6,60 @@ const VALID_CHOICES = {
   lizard: 'l',
   spock: 'sp'
 };
+let gameType = null;
+let totalPlays = 0;
+let totalUserWins = 0;
+let totalCompWins = 0;
+let totalTies = 0;
 
 // Format responses
 function prompt(message) {
   console.log(`=> ${message}`);
+}
+
+// Record best of five wins
+function incrementBestOfFive(userChoice, compChoice) {
+  if (userWin(userChoice, compChoice)) {
+    totalUserWins += 1;
+  } else if (compWin(userChoice, compChoice)) {
+    totalCompWins += 1;
+  } else {
+    totalTies += 1;
+  }
+
+  totalPlays += 1;
+}
+
+// Set best of five game
+function displayBestOfFiveWinner() {
+  console.log('-'.repeat(30));
+  prompt(`User wins: ${totalUserWins}`);
+  prompt(`Computer wins: ${totalCompWins}`);
+  prompt(`Ties: ${totalTies}`);
+  console.log('-'.repeat(30));
+
+  if (totalUserWins > totalCompWins) {
+    console.log('\tUser Wins!');
+  } else if (totalUserWins < totalCompWins) {
+    console.log('\tComputer Wins!');
+  } else {
+    console.log("\tIt's a tie!");
+  }
+
+  console.log('-'.repeat(30));
+}
+
+// Play game again
+function playAgain() {
+  prompt('Do you want to play again (y/n)?');
+  let answer = rlSync.question().toLowerCase();
+
+  while (answer[0] !== 'n' && answer[0] !== 'y') {
+    prompt('Please enter "y" or "n".');
+    answer = rlSync.question().toLowerCase();
+  }
+
+  return answer;
 }
 
 // Iterate over valid choices and the abbreviations and
@@ -21,7 +71,7 @@ function validUserChoice(input, obj) {
 }
 
 // Set a consistant user choice for game logic comparison
-function setUserChoice(input, obj) {
+function standardizeUserChoice(input, obj) {
   let result;
   for (const key in obj) {
     if (input === key || input === obj[key]) {
@@ -36,7 +86,7 @@ function setUserChoice(input, obj) {
 function userWin(user, comp) {
   return ((user === 'rock' && (comp === 'scissors' || comp === 'lizard')) ||
     (user === 'paper' && (comp === 'rock' || comp === 'spock')) ||
-    (user === 'scissors' && (comp === 'paper' || comp === 'scissors')) ||
+    (user === 'scissors' && (comp === 'paper' || comp === 'lizard')) ||
     (user === 'lizard' && (comp === 'paper' || comp === 'spock')) ||
     (user === 'spock' && (comp === 'rock' || comp === 'scissors')));
 }
@@ -63,6 +113,19 @@ function displayWinner(userChoice, compChoice) {
 
 // Begin game loop
 while (true) {
+  if (![1, 2].includes(gameType)) {
+    // continue;
+    //   } else {
+    prompt('What do you want to play?');
+    console.log('[1] Classic\n[2] Best of five');
+    gameType = Number(rlSync.question());
+
+    while (![1, 2].includes(gameType)) {
+      prompt("Invalid option! Please Choose [1] or [2]!");
+      gameType = Number(rlSync.question());
+    }
+  }
+
   prompt(`Choose one: ${Object.keys(VALID_CHOICES).join(', ')}`);
   let choice = rlSync.question();
 
@@ -71,7 +134,7 @@ while (true) {
     choice = rlSync.question();
   }
 
-  choice = setUserChoice(choice, VALID_CHOICES);
+  choice = standardizeUserChoice(choice, VALID_CHOICES);
 
   // Calculate a random computer choice
   let randomIndex = Math.floor(Math.random() *
@@ -80,18 +143,44 @@ while (true) {
 
   prompt(`You chose ${choice}, computer chose ${computerChoice}`);
 
-  displayWinner(choice, computerChoice);
-
-  prompt('Do you want to play again (y/n)?');
-  let answer = rlSync.question().toLowerCase();
-
-  while (answer[0] !== 'n' && answer[0] !== 'y') {
-    prompt('Please enter "y" or "n".');
-    answer = rlSync.question().toLowerCase();
+  // Display winner if classic game or increment best of five counters
+  if (gameType === 1) {
+    displayWinner(choice, computerChoice);
+  } else {
+    incrementBestOfFive(choice, computerChoice);
+    displayWinner(choice, computerChoice);
   }
 
-  if (answer[0] !== 'y') {
-    prompt('Goodbye!');
-    break;
+  let again;
+
+  if (gameType === 1) {
+    let again = playAgain();
+    gameType = null;
+
+    if (again[0] !== 'y') {
+      prompt('Goodbye!');
+      break;
+    } else {
+      console.clear();
+    }
+  } else if ((gameType === 2) && (totalPlays === 5)) {
+    displayBestOfFiveWinner();
+
+    gameType = null;
+    totalCompWins = 0;
+    totalUserWins = 0;
+    totalTies = 0;
+    totalPlays = 0;
+    let again = playAgain();
+
+    if (again[0] !== 'y') {
+      prompt('Goodbye!');
+      break;
+    } else {
+      console.clear();
+    }
   }
+
+  // console.log(`User Wins: ${totalUserWins} Comp Wins: ${totalCompWins} Ties: ${totalTies}`);
+  // console.log(`Total Plays: ${totalPlays}`);
 }
