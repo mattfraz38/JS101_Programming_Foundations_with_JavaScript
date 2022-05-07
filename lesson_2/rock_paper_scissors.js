@@ -49,6 +49,14 @@ function displayBestOfFiveWinner() {
   console.log('-'.repeat(30));
 }
 
+function resetBofValues() {
+  gameType = null;
+  totalCompWins = 0;
+  totalUserWins = 0;
+  totalTies = 0;
+  totalPlays = 0;
+}
+
 // Play game again
 function playAgain() {
   prompt('Do you want to play again (y/n)?');
@@ -111,11 +119,12 @@ function displayWinner(userChoice, compChoice) {
   }
 }
 
+console.clear();
+
 // Begin game loop
 while (true) {
+  // Ask user what type of game they want to play
   if (![1, 2].includes(gameType)) {
-    // continue;
-    //   } else {
     prompt('What do you want to play?');
     console.log('[1] Classic\n[2] Best of five');
     gameType = Number(rlSync.question());
@@ -124,9 +133,12 @@ while (true) {
       prompt("Invalid option! Please Choose [1] or [2]!");
       gameType = Number(rlSync.question());
     }
+
+    console.clear();
   }
 
   prompt(`Choose one: ${Object.keys(VALID_CHOICES).join(', ')}`);
+  prompt(`\t\t(${Object.values(VALID_CHOICES).join(', ')})`);
   let choice = rlSync.question();
 
   while (!validUserChoice(choice, VALID_CHOICES)) {
@@ -151,8 +163,6 @@ while (true) {
     displayWinner(choice, computerChoice);
   }
 
-  let again;
-
   if (gameType === 1) {
     let again = playAgain();
     gameType = null;
@@ -164,13 +174,9 @@ while (true) {
       console.clear();
     }
   } else if ((gameType === 2) && (totalPlays === 5)) {
+    console.clear();
     displayBestOfFiveWinner();
-
-    gameType = null;
-    totalCompWins = 0;
-    totalUserWins = 0;
-    totalTies = 0;
-    totalPlays = 0;
+    resetBofValues();
     let again = playAgain();
 
     if (again[0] !== 'y') {
@@ -180,7 +186,4 @@ while (true) {
       console.clear();
     }
   }
-
-  // console.log(`User Wins: ${totalUserWins} Comp Wins: ${totalCompWins} Ties: ${totalTies}`);
-  // console.log(`Total Plays: ${totalPlays}`);
 }
