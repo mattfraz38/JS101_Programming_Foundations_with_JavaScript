@@ -1,16 +1,42 @@
 const rlSync = require('readline-sync');
-const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
+const VALID_CHOICES = {
+  rock: 'r',
+  paper: 'p',
+  scissors: 's',
+  lizard: 'l',
+  spock: 'sp'
+};
 
 // Format responses
 function prompt(message) {
   console.log(`=> ${message}`);
 }
 
+// Iterate over valid choices and the abbreviations and
+// check that the user input is equal to a valid choice
+function validUserChoice(input, obj) {
+  const keys = Object.keys(obj);
+  const values = Object.values(obj);
+  return (keys.includes(input)) || (values.includes(input));
+}
+
+// Set a consistant user choice for game logic comparison
+function setUserChoice(input, obj) {
+  let result;
+  for (const key in obj) {
+    if (input === key || input === obj[key]) {
+      result = key;
+    }
+  }
+
+  return result;
+}
+
 // Determine if user wins
 function userWin(user, comp) {
   return ((user === 'rock' && (comp === 'scissors' || comp === 'lizard')) ||
     (user === 'paper' && (comp === 'rock' || comp === 'spock')) ||
-    (user === 'scissors' && (comp === 'paper' || comp === 'spock')) ||
+    (user === 'scissors' && (comp === 'paper' || comp === 'scissors')) ||
     (user === 'lizard' && (comp === 'paper' || comp === 'spock')) ||
     (user === 'spock' && (comp === 'rock' || comp === 'scissors')));
 }
@@ -37,17 +63,20 @@ function displayWinner(userChoice, compChoice) {
 
 // Begin game loop
 while (true) {
-  prompt(`Choose one: ${VALID_CHOICES.join(', ')}`);
+  prompt(`Choose one: ${Object.keys(VALID_CHOICES).join(', ')}`);
   let choice = rlSync.question();
 
-  while (!VALID_CHOICES.includes(choice)) {
+  while (!validUserChoice(choice, VALID_CHOICES)) {
     prompt("That's not a valid choice!");
     choice = rlSync.question();
   }
 
-  // Calculate computers choice
-  let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
-  let computerChoice = VALID_CHOICES[randomIndex];
+  choice = setUserChoice(choice, VALID_CHOICES);
+
+  // Calculate a random computer choice
+  let randomIndex = Math.floor(Math.random() *
+    Object.keys(VALID_CHOICES).length);
+  let computerChoice = Object.keys(VALID_CHOICES)[randomIndex];
 
   prompt(`You chose ${choice}, computer chose ${computerChoice}`);
 
