@@ -102,3 +102,82 @@ console.log(factors(15));
 //   divisor -= 1;
 // }
 
+// Alyssa was asked to write an implementation of a rolling buffer.
+// You can add and remove elements from a rolling buffer. However,
+// once the buffer becomes full, any new elements will displace the
+// oldest elements in the buffer.
+
+// She wrote two implementations of the code for adding elements to
+// the buffer. In presenting the code to her team leader, she said
+// "Take your pick. Do you prefer push() or concat() for modifying
+// the buffer?".
+
+// Is there a difference between these implementations, other than
+// the method she used to add an element to the buffer?
+
+function addToRollingBuffer1(buffer, maxBufferSize, newElement) {
+  buffer.push(newElement);
+  if (buffer.length > maxBufferSize) {
+    buffer.shift();
+  }
+  return buffer;
+}
+
+function addToRollingBuffer2(buffer, maxBufferSize, newElement) {
+  buffer = buffer.concat(newElement);
+  if (buffer.length > maxBufferSize) {
+    buffer.shift();
+  }
+  return buffer;
+}
+
+// The first implementation will simply replace add/shift
+// elements to the bubber in place not creating a new array.
+// However the second implementation using concat() will merge
+// the newElement into buffer creating a new object in the process
+
+// Yes, there is a difference. While both methods have the same
+// return value, the first implementation mutates the argument
+// represented by buffer. That is, the caller will see that the
+// array is different when the function returns. The rollingBuffer2
+// implementation doesn't mutate the argument specified by the value
+// of buffer.
+
+// What will the following two lines of code output?
+
+console.log(0.3 + 0.6);           // 0.9 <-- INCORRECT
+console.log(0.3 + 0.6 === 0.9);   // false
+
+// JavaScript uses floating point numbers for all numeric
+// operations. Most floating point representations used on
+// computers lack a certain amount of precision, and that
+// can yield unexpected results like these.
+
+// In this case, the output was:
+// 0.8999999999999999
+
+// What do you think the following code will output?
+
+let nanArray = [NaN];
+
+console.log(nanArray[0] === NaN);   // false
+// Bonus:
+// How can you reliably test if a value is NaN?
+// Number.isNaN(nanArray);
+
+// The output is false. NaN -- not a number -- is a special
+// numeric value that indicates that an operation that was
+// intended to return a number failed. JavaScript doesn't
+// let you use == and === to determine whether a value is NaN.
+
+// What is the output of the following code?
+
+let answer = 42;
+
+function messWithIt(someNumber) {
+  return (someNumber += 8);
+}
+
+let newAnswer = messWithIt(answer);
+
+console.log(answer - 8);    // 34
