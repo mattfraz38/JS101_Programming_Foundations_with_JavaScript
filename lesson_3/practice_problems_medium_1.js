@@ -181,3 +181,74 @@ function messWithIt(someNumber) {
 let newAnswer = messWithIt(answer);
 
 console.log(answer - 8);    // 34
+
+// One day, Spot was playing with the Munster family's home computer,
+// and he wrote a small program to mess with their demographic data:
+
+let munsters = {
+  Herman: { age: 32, gender: "male" },
+  Lily: { age: 30, gender: "female" },
+  Grandpa: { age: 402, gender: "male" },
+  Eddie: { age: 10, gender: "male" },
+  Marilyn: { age: 23, gender: "female" }
+};
+
+function messWithDemographics(demoObject) {
+  Object.values(demoObject).forEach(familyMember => {
+    familyMember["age"] += 42;
+    familyMember["gender"] = "other";
+  });
+}
+// After writing this function, he typed the following code:
+
+messWithDemographics(munsters);
+// Before Grandpa could stop him, Spot hit the Enter key with his tail. Did the family's data get ransacked? Why or why not?
+
+// Yes it did because the placeholder variable demoObject is
+// referencing the munsters object. Then because objects are 
+// pass by reference, the forEach iterator references the 
+// same address of the munsters object key/value pairs
+
+// Why? In JavaScript, objects are passed by reference. Thus, Spot's
+// demoObject starts off pointing to the munsters object. His program
+// could replace that with some other object, and the family's data
+// would be safe. However, in this case, the program doesn't reassign
+// demoObject; it just uses it, as-is. Thus, the object that gets
+// changed by the function is the munsters object.
+
+// Function and method calls can take expressions as arguments.
+// Suppose we define a function named rps as follows, which follows
+// the classic rules of the rock-paper-scissors game, but with a
+// slight twist: in the event of a tie, it just returns the choice
+// made by both players.
+
+function rps(fist1, fist2) {
+  if (fist1 === "rock") {
+    return fist2 === "paper" ? "paper" : "rock";
+  } else if (fist1 === "paper") {
+    return fist2 === "scissors" ? "scissors" : "paper";
+  } else {
+    return fist2 === "rock" ? "rock" : "scissors";
+  }
+}
+// What does the following code output?
+
+console.log(rps(rps(rps("rock", "paper"), rps("rock", "scissors")), "rock"));
+
+// The output will be "paper"
+
+// Consider these two simple functions:
+
+function foo(param = "no") {
+  return "yes";
+}
+
+function bar(param = "no") {
+  return param === "no" ? "yes" : "no";
+}
+// What will the following function invocation return?
+
+bar(foo());     // The return value is "no"
+
+// This is because the value returned from the foo function
+// will always be "yes" , and "yes" === "no" will be false.
