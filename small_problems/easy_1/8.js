@@ -9,6 +9,16 @@
 // a function that takes any year greater than 0 as input and returns
 // true if the year is a leap year, or false if it is not a leap year.
 
+function isLeapYear(year) {
+  if (year % 400 === 0) {
+    return console.log(true);
+  } else if (year % 100 === 0) {
+    return console.log(false);
+  } else {
+    return console.log(year % 4 === 0);
+  }
+}
+
 isLeapYear(2016);      // true
 isLeapYear(2015);      // false
 isLeapYear(2100);      // false
