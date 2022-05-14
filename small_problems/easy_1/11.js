@@ -28,8 +28,6 @@ ALGORITHM:
 function utf16Value(str) {
   let result = 0;
 
-  if (str.length === 0) return 0;
-
   for (let i = 0; i < str.length; ++i) {
     result += str.charCodeAt(i);
   }
