@@ -47,7 +47,7 @@ let sumMaleAges = maleMemberAges.reduce((accu, cur) => {
 
 console.log(sumMaleAges);
 
-// Optional solution 1:
+// Optional solution 2:
 //  - Use for/in loop
 // let totalMaleAge = 0;
 
@@ -59,7 +59,7 @@ console.log(sumMaleAges);
 
 // console.log(totalMaleAge); // => 444
 
-// Optional solution 2:
+// Optional solution 3:
 //  - Create an array of the munsters object values and iterate
 //    with foreach
 // let memberDetails = Object.values(munsters);
