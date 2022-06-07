@@ -140,14 +140,15 @@ function computerChoosesSquare(board) {
 }
 
 // Main game loop
+mainGame:
 while (true) {
   let computerWins = 0;
   let humanWins = 0;
 
+  console.log('*** Best of Five ***');
+
   while (true) {
     let board = initializeBoard();
-
-    console.log(`User Wins: ${humanWins}\nComputer Wins: ${computerWins}`);
 
     while (true) {
       displayBoard(board);
@@ -173,16 +174,13 @@ while (true) {
       computerWins += 1;
     }
 
-    // if (humanWins === 5 || computerWins === 5) {
-    //   prompt('Play again? (y or n)');
-    //   let answer = rlSync.question().toLowerCase()[0];
-    //   if (answer !== 'y') break;
-    // }
-  }
-  if (humanWins === 5 || computerWins === 5) {
-    prompt('Play again? (y or n)');
-    let answer = rlSync.question().toLowerCase()[0];
-    if (answer !== 'y') break;
+    console.log(`User Wins: ${humanWins}\nComputer Wins: ${computerWins}`);
+
+    if (humanWins === 5 || computerWins === 5) {
+      prompt('Play again? (y or n)');
+      let answer = rlSync.question().toLowerCase()[0];
+      if (answer !== 'y') break mainGame;
+    }
   }
 }
 
