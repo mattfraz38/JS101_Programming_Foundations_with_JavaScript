@@ -2,9 +2,10 @@ const rlSync = require('readline-sync');
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
+const GAMES_TO_WIN = 5;
 
 function displayBoard(board) {
-  console.clear();
+  // console.clear();
 
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}.`);
 
@@ -111,7 +112,6 @@ function joinOr(arr, delimiter, finalDelimiter = 'or') {
   } else if (argumentExists(delimiter) &&
     argumentExists(finalDelimiter)) {
     joinedElements = basicElementJoin(arr, delimiter);
-
     result = joinWithWord(joinedElements, delimiter, finalDelimiter);
   }
 
@@ -139,30 +139,51 @@ function computerChoosesSquare(board) {
   board[square] = COMPUTER_MARKER;
 }
 
+// Main game loop
 while (true) {
-  let board = initializeBoard();
+  let computerWins = 0;
+  let humanWins = 0;
 
   while (true) {
+    let board = initializeBoard();
+
+    console.log(`User Wins: ${humanWins}\nComputer Wins: ${computerWins}`);
+
+    while (true) {
+      displayBoard(board);
+
+      playerChoosesSquare(board);
+      if (someoneWon(board) || boardFull(board)) break;
+
+      computerChoosesSquare(board);
+      if (someoneWon(board) || boardFull(board)) break;
+    }
+
     displayBoard(board);
 
-    playerChoosesSquare(board);
-    if (someoneWon(board) || boardFull(board)) break;
+    if (someoneWon(board)) {
+      prompt(`${detectWinner(board)} won!`);
+    } else {
+      prompt("It's a tie!");
+    }
 
-    computerChoosesSquare(board);
-    if (someoneWon(board) || boardFull(board)) break;
+    if (detectWinner(board) === 'Player') {
+      humanWins += 1;
+    } else if (detectWinner(board) === 'Computer') {
+      computerWins += 1;
+    }
+
+    // if (humanWins === 5 || computerWins === 5) {
+    //   prompt('Play again? (y or n)');
+    //   let answer = rlSync.question().toLowerCase()[0];
+    //   if (answer !== 'y') break;
+    // }
   }
-
-  displayBoard(board);
-
-  if (someoneWon(board)) {
-    prompt(`${detectWinner(board)} won!`);
-  } else {
-    prompt("It's a tie!");
+  if (humanWins === 5 || computerWins === 5) {
+    prompt('Play again? (y or n)');
+    let answer = rlSync.question().toLowerCase()[0];
+    if (answer !== 'y') break;
   }
-
-  prompt('Play again? (y or n)');
-  let answer = rlSync.question().toLowerCase()[0];
-  if (answer !== 'y') break;
 }
 
 prompt('Thanks for playing Tic Tac Toe!');
