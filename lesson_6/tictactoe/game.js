@@ -176,10 +176,24 @@ while (true) {
 
     console.log(`User Wins: ${humanWins}\nComputer Wins: ${computerWins}`);
 
+    let winner;
+    if (humanWins > computerWins) {
+      winner = 'Player';
+    } else {
+      winner = 'Computer';
+    }
+
     if (humanWins === 5 || computerWins === 5) {
+      console.log('*** Congratulations ***');
+      console.log(`--- ${winner} Wins! ---`);
+
       prompt('Play again? (y or n)');
+
       let answer = rlSync.question().toLowerCase()[0];
       if (answer !== 'y') break mainGame;
+
+      humanWins = 0;
+      computerWins = 0;
     }
   }
 }
