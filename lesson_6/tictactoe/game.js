@@ -3,10 +3,13 @@ const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const GAMES_TO_WIN = 5;
+const WINNING_LINES = [
+  [1, 2, 3], [4, 5, 6], [7, 8, 9],  // rows
+  [1, 4, 7], [2, 5, 8], [3, 6, 9],  // columns
+  [1, 5, 9], [3, 5, 7]              // diagonals
+];
 
 function displayBoard(board) {
-  // console.clear();
-
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}.`);
 
   console.log('');
@@ -48,14 +51,8 @@ function boardFull(board) {
 }
 
 function detectWinner(board) {
-  let winningLines = [
-    [1, 2, 3], [4, 5, 6], [7, 8, 9],  // rows
-    [1, 4, 7], [2, 5, 8], [3, 6, 9],  // columns
-    [1, 5, 9], [3, 5, 7]              // diagonals
-  ];
-
-  for (let line = 0; line < winningLines.length; ++line) {
-    let [sq1, sq2, sq3] = winningLines[line];
+  for (let line = 0; line < WINNING_LINES.length; ++line) {
+    let [sq1, sq2, sq3] = WINNING_LINES[line];
 
     if (
       board[sq1] === HUMAN_MARKER &&
@@ -145,6 +142,7 @@ while (true) {
   let computerWins = 0;
   let humanWins = 0;
 
+  console.clear();
   console.log('*** Best of Five ***');
 
   while (true) {
@@ -158,20 +156,20 @@ while (true) {
 
       computerChoosesSquare(board);
       if (someoneWon(board) || boardFull(board)) break;
+
+      console.clear();
     }
 
-    displayBoard(board);
-
-    if (someoneWon(board)) {
-      prompt(`${detectWinner(board)} won!`);
-    } else {
-      prompt("It's a tie!");
-    }
+    console.clear();
 
     if (detectWinner(board) === 'Player') {
+      console.log(`${detectWinner(board)} won!`);
       humanWins += 1;
     } else if (detectWinner(board) === 'Computer') {
+      console.log(`${detectWinner(board)} won!`);
       computerWins += 1;
+    } else {
+      console.log("It's a tie!");
     }
 
     console.log(`User Wins: ${humanWins}\nComputer Wins: ${computerWins}`);
@@ -183,10 +181,13 @@ while (true) {
       winner = 'Computer';
     }
 
-    if (humanWins === 5 || computerWins === 5) {
-      console.log('*** Congratulations ***');
-      console.log(`--- ${winner} Wins! ---`);
-
+    if (humanWins === GAMES_TO_WIN
+      || computerWins === GAMES_TO_WIN) {
+      console.log('');
+      console.log('**** Congratulations ****');
+      console.log(` --- ${winner} Wins! ---`);
+      console.log('*************************');
+      console.log('');
       prompt('Play again? (y or n)');
 
       let answer = rlSync.question().toLowerCase()[0];
@@ -194,6 +195,8 @@ while (true) {
 
       humanWins = 0;
       computerWins = 0;
+      console.clear();
+      console.log('*** Best of Five ***');
     }
   }
 }
