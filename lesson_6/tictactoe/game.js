@@ -140,17 +140,6 @@ function findAtRiskSquare(line, board, marker) {
   return null;
 }
 
-// function findStrategicMove(line, board) {
-//   let markersInLine = line.map(square => board[square]);
-
-//   if (markersInLine.filter(val => val === COMPUTER_MARKER).length === 2) {
-//     let unusedSquare = line.find(square => board[square] === INITIAL_MARKER);
-//     if (unusedSquare !== undefined) return unusedSquare;
-//   }
-
-//   return null;
-// }
-
 function computerChoosesSquare(board) {
   let square;
 
