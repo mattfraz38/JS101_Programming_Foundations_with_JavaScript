@@ -129,9 +129,29 @@ function playerChoosesSquare(board) {
   board[square] = HUMAN_MARKER;
 }
 
+function findAtRiskSquare(line, board) {
+  let markersInLine = line.map(square => board[square]);
+
+  if (markersInLine.filter(val => val === HUMAN_MARKER).length === 2) {
+    let unusedSquare = line.find(square => board[square] === INITIAL_MARKER);
+    if (unusedSquare !== undefined) return unusedSquare;
+  }
+
+  return null;
+}
+
 function computerChoosesSquare(board) {
-  let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
-  let square = emptySquares(board)[randomIndex];
+  let square;
+  for (let index = 0; index < WINNING_LINES.length; ++index) {
+    let line = WINNING_LINES[index];
+    square = findAtRiskSquare(line, board);
+    if (square) break;
+  }
+
+  if (!square) {
+    let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
+    square = emptySquares(board)[randomIndex];
+  }
 
   board[square] = COMPUTER_MARKER;
 }
@@ -185,7 +205,7 @@ while (true) {
       || computerWins === GAMES_TO_WIN) {
       console.log('');
       console.log('**** Congratulations ****');
-      console.log(` --- ${winner} Wins! ---`);
+      console.log(` -- - ${winner} Wins! -- - `);
       console.log('*************************');
       console.log('');
       prompt('Play again? (y or n)');
