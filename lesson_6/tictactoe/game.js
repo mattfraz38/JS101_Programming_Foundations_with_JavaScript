@@ -3,12 +3,14 @@ const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const GAMES_TO_WIN = 5;
+const MIDDLE_SQR = '5';
 const WINNING_LINES = [
   [1, 2, 3], [4, 5, 6], [7, 8, 9],  // rows
   [1, 4, 7], [2, 5, 8], [3, 6, 9],  // columns
   [1, 5, 9], [3, 5, 7]              // diagonals
 ];
 
+// draw the board
 function displayBoard(board) {
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}.`);
 
@@ -27,6 +29,7 @@ function displayBoard(board) {
   console.log('');
 }
 
+// initialize the board with empty characters 
 function initializeBoard() {
   let board = {};
 
@@ -37,19 +40,28 @@ function initializeBoard() {
   return board;
 }
 
+function gameGreeting() {
+  console.clear();
+  console.log('*** Best of Five ***');
+}
+
+// prompt message
 function prompt(msg) {
   console.log(`=> ${msg}`);
 }
 
+// list available moves
 function emptySquares(board) {
   return Object.keys(board)
     .filter(key => board[key] === INITIAL_MARKER);
 }
 
+// check if there are no more moves
 function boardFull(board) {
   return emptySquares(board).length === 0;
 }
 
+// determine game winner
 function detectWinner(board) {
   for (let line = 0; line < WINNING_LINES.length; ++line) {
     let [sq1, sq2, sq3] = WINNING_LINES[line];
@@ -72,17 +84,21 @@ function detectWinner(board) {
   return null;
 }
 
+// check if there is a winner
 function someoneWon(board) {
   return !!detectWinner(board);
 }
 
+// check if function recieved argument
 function argumentExists(bool) {
   return bool !== undefined;
 }
 
+// ***** format list of available moves for display *****
 function basicElementJoin(arr, delimiter = ', ') {
   return arr.join(delimiter);
 }
+
 
 function joinWithWord(joinedString, delimiter = ', ', word = 'or') {
   let lastDelimiterIndex = joinedString.lastIndexOf(delimiter);
@@ -114,7 +130,9 @@ function joinOr(arr, delimiter, finalDelimiter = 'or') {
 
   return result;
 }
+// ******************************************************
 
+// human player chooses a square
 function playerChoosesSquare(board) {
   let square;
 
@@ -129,6 +147,7 @@ function playerChoosesSquare(board) {
   board[square] = HUMAN_MARKER;
 }
 
+// check for a winning or blocking move
 function findAtRiskSquare(line, board, marker) {
   let markersInLine = line.map(square => board[square]);
 
@@ -140,17 +159,10 @@ function findAtRiskSquare(line, board, marker) {
   return null;
 }
 
-function computerChoosesSquare(board) {
+// computer chooses an offensive move
+function offenseMove(board) {
   let square;
 
-  // defense first
-  for (let index = 0; index < WINNING_LINES.length; ++index) {
-    let line = WINNING_LINES[index];
-    square = findAtRiskSquare(line, board, HUMAN_MARKER);
-    if (square) break;
-  }
-
-  // offense move
   if (!square) {
     for (let index = 0; index < WINNING_LINES.length; ++index) {
       let line = WINNING_LINES[index];
@@ -159,23 +171,70 @@ function computerChoosesSquare(board) {
     }
   }
 
-  // no deffensive or offensive moves
+  if (square) return square;
+  return null;
+}
+
+// computer chooses an defensive move
+function defensiveMove(board) {
+  let square;
+
+  for (let index = 0; index < WINNING_LINES.length; ++index) {
+    let line = WINNING_LINES[index];
+    square = findAtRiskSquare(line, board, HUMAN_MARKER);
+    if (square) break;
+  }
+
+  if (square) return square;
+  return null;
+}
+
+// computer chooses random move
+function chooseRandom(board) {
+  let square;
+
   if (!square) {
     let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
     square = emptySquares(board)[randomIndex];
   }
 
-  board[square] = COMPUTER_MARKER;
+  return square;
 }
 
-// Main game loop
+// computer chooses a square
+function computerChoosesSquare(board) {
+  let square;
+
+  // set square to either an offensive move or defensive move
+  square = offenseMove(board) || defensiveMove(board);
+
+  // if square is not null set board square to computer marker
+  // or take the middle square if available
+  // or choose a random square
+  if (square) {
+    board[square] = COMPUTER_MARKER;
+  } else if (board[MIDDLE_SQR] === INITIAL_MARKER) {
+    board[MIDDLE_SQR] = COMPUTER_MARKER;
+  } else {
+    board[chooseRandom(board)] = COMPUTER_MARKER;
+  }
+}
+
+function displayFinalWinner(gameWinner) {
+  console.log('');
+  console.log('**** Congratulations ****');
+  console.log(` ---- ${gameWinner} Wins! --- `);
+  console.log('*************************');
+  console.log('');
+}
+
+// main game loop
 mainGame:
 while (true) {
   let computerWins = 0;
   let humanWins = 0;
 
-  console.clear();
-  console.log('*** Best of Five ***');
+  gameGreeting();
 
   while (true) {
     let board = initializeBoard();
@@ -215,11 +274,7 @@ while (true) {
 
     if (humanWins === GAMES_TO_WIN
       || computerWins === GAMES_TO_WIN) {
-      console.log('');
-      console.log('**** Congratulations ****');
-      console.log(` -- - ${winner} Wins! -- - `);
-      console.log('*************************');
-      console.log('');
+      displayFinalWinner(winner);
       prompt('Play again? (y or n)');
 
       let answer = rlSync.question().toLowerCase()[0];
@@ -227,8 +282,8 @@ while (true) {
 
       humanWins = 0;
       computerWins = 0;
-      console.clear();
-      console.log('*** Best of Five ***');
+
+      gameGreeting();
     }
   }
 }
