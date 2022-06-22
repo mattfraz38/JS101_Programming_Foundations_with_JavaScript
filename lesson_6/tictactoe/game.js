@@ -2,6 +2,7 @@ const rlSync = require('readline-sync');
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
+const PLAYER_ORDER = { first: 'player', second: 'computer' };
 const GAMES_TO_WIN = 5;
 const MIDDLE_SQR = '5';
 const WINNING_LINES = [
@@ -12,6 +13,7 @@ const WINNING_LINES = [
 
 // draw the board
 function displayBoard(board) {
+  // console.clear();
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}.`);
 
   console.log('');
@@ -27,6 +29,8 @@ function displayBoard(board) {
   console.log(`  ${board['7']}  |  ${board['8']}  |   ${board['9']}`);
   console.log('     |     |');
   console.log('');
+
+  return null;
 }
 
 // initialize the board with empty characters 
@@ -40,14 +44,51 @@ function initializeBoard() {
   return board;
 }
 
+// initial game greeting
 function gameGreeting() {
-  console.clear();
-  console.log('*** Best of Five ***');
+  // console.clear();
+
+  console.log('');
+  console.log('****    WELCOME    ****');
+  console.log('****      TO       ****');
+  console.log('****  Tic-Tac-Toe  ****');
+  console.log('');
+  console.log('   - Best of Five -   ');
+  console.log('');
+
+  return null;
+}
+
+// determine order of players
+function choosePlayerOrder() {
+  prompt('Do you want to go first? (Yes/n)');
+  let answer = rlSync.question().toLowerCase();
+
+  while (!['yes', 'y', 'no', 'n'].includes(answer)) {
+    console.log('Invalid Option');
+    prompt('Do you want to go first? (Yes/n)');
+    answer = rlSync.question().toLowerCase();
+  }
+
+  // the default is the player going first
+  if (['yes', 'y'].includes(answer)) {
+    // console.clear();
+    return;
+  } else {
+    PLAYER_ORDER['first'] = 'computer';
+    PLAYER_ORDER['second'] = 'player';
+    // console.clear();
+  }
+
+
+  return null;
 }
 
 // prompt message
 function prompt(msg) {
   console.log(`=> ${msg}`);
+
+  return null;
 }
 
 // list available moves
@@ -89,12 +130,29 @@ function someoneWon(board) {
   return !!detectWinner(board);
 }
 
+// display single match winner 
+function showWinner(board) {
+  // console.clear();
+
+  if (detectWinner(board) === 'Player') {
+    console.log(`${detectWinner(board)} won!`);
+    // humanWins += 1;
+  } else if (detectWinner(board) === 'Computer') {
+    console.log(`${detectWinner(board)} won!`);
+    // computerWins += 1;
+  } else {
+    console.log("It's a tie!");
+  }
+
+  return null;
+}
+
 // check if function recieved argument
 function argumentExists(bool) {
   return bool !== undefined;
 }
 
-// ***** format list of available moves for display *****
+// ********* format list of available moves for display *********
 function basicElementJoin(arr, delimiter = ', ') {
   return arr.join(delimiter);
 }
@@ -130,11 +188,13 @@ function joinOr(arr, delimiter, finalDelimiter = 'or') {
 
   return result;
 }
-// ******************************************************
+// **************************************************************
 
 // human player chooses a square
 function playerChoosesSquare(board) {
   let square;
+
+  if (PLAYER_ORDER['first'] === 'computer' && emptySquares(board).length === 9) return;
 
   while (true) {
     prompt(`Choose a square: ${joinOr(emptySquares(board), ', ')}`);
@@ -145,6 +205,7 @@ function playerChoosesSquare(board) {
   }
 
   board[square] = HUMAN_MARKER;
+  return null;
 }
 
 // check for a winning or blocking move
@@ -205,6 +266,11 @@ function chooseRandom(board) {
 function computerChoosesSquare(board) {
   let square;
 
+  if (PLAYER_ORDER['first'] === 'computer' && emptySquares(board).length === 9) {
+    board[MIDDLE_SQR] = COMPUTER_MARKER;
+    return null;
+  }
+
   // set square to either an offensive move or defensive move
   square = offenseMove(board) || defensiveMove(board);
 
@@ -218,8 +284,31 @@ function computerChoosesSquare(board) {
   } else {
     board[chooseRandom(board)] = COMPUTER_MARKER;
   }
+
+  return null;
 }
 
+// begin gameplay in correct order
+function playerOrCompChooseSquare(board) {
+  while (true) {
+    displayBoard(board);
+    // if (someoneWon(board)) showWinner(board);
+
+    playerChoosesSquare(board);
+    if (someoneWon(board) || boardFull(board)) break;
+
+    computerChoosesSquare(board);
+    if (someoneWon(board) || boardFull(board)) break;
+
+    // console.clear();
+  }
+  // console.log(PLAYER_ORDER);
+  // showWinner(board);
+
+  return null;
+}
+
+// display winner of best of five game
 function displayFinalWinner(gameWinner) {
   console.log('');
   console.log('**** Congratulations ****');
@@ -235,34 +324,24 @@ while (true) {
   let humanWins = 0;
 
   gameGreeting();
+  choosePlayerOrder();
 
   while (true) {
     let board = initializeBoard();
 
-    while (true) {
-      displayBoard(board);
+    playerOrCompChooseSquare(board);
 
-      playerChoosesSquare(board);
-      if (someoneWon(board) || boardFull(board)) break;
+    // if (detectWinner(board) === 'Player') {
+    //   console.log(`${detectWinner(board)} won!`);
+    //   humanWins += 1;
+    // } else if (detectWinner(board) === 'Computer') {
+    //   console.log(`${detectWinner(board)} won!`);
+    //   computerWins += 1;
+    // } else {
+    //   console.log("It's a tie!");
+    // }
 
-      computerChoosesSquare(board);
-      if (someoneWon(board) || boardFull(board)) break;
-
-      console.clear();
-    }
-
-    console.clear();
-
-    if (detectWinner(board) === 'Player') {
-      console.log(`${detectWinner(board)} won!`);
-      humanWins += 1;
-    } else if (detectWinner(board) === 'Computer') {
-      console.log(`${detectWinner(board)} won!`);
-      computerWins += 1;
-    } else {
-      console.log("It's a tie!");
-    }
-
+    // showWinner(board);
     console.log(`User Wins: ${humanWins}\nComputer Wins: ${computerWins}`);
 
     let winner;
@@ -275,7 +354,7 @@ while (true) {
     if (humanWins === GAMES_TO_WIN
       || computerWins === GAMES_TO_WIN) {
       displayFinalWinner(winner);
-      prompt('Play again? (y or n)');
+      prompt('Play again? (Yes/n)');
 
       let answer = rlSync.question().toLowerCase()[0];
       if (answer !== 'y') break mainGame;
