@@ -3,6 +3,7 @@ const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const PLAYER_ORDER = { first: 'player', second: 'computer' };
+const BEST_OF_FIVE_WINS = { player: 0, computer: 0 };
 const GAMES_TO_WIN = 5;
 const MIDDLE_SQR = '5';
 const WINNING_LINES = [
@@ -80,7 +81,6 @@ function choosePlayerOrder() {
     // console.clear();
   }
 
-
   return null;
 }
 
@@ -136,10 +136,10 @@ function showWinner(board) {
 
   if (detectWinner(board) === 'Player') {
     console.log(`${detectWinner(board)} won!`);
-    // humanWins += 1;
+    BEST_OF_FIVE_WINS['player'] += 1;
   } else if (detectWinner(board) === 'Computer') {
     console.log(`${detectWinner(board)} won!`);
-    // computerWins += 1;
+    BEST_OF_FIVE_WINS['computer'] += 1;
   } else {
     console.log("It's a tie!");
   }
@@ -194,7 +194,10 @@ function joinOr(arr, delimiter, finalDelimiter = 'or') {
 function playerChoosesSquare(board) {
   let square;
 
-  if (PLAYER_ORDER['first'] === 'computer' && emptySquares(board).length === 9) return;
+  if (PLAYER_ORDER['first'] === 'computer' && emptySquares(board).length === 9) {
+    showWinner(board);
+    return;
+  }
 
   while (true) {
     prompt(`Choose a square: ${joinOr(emptySquares(board), ', ')}`);
@@ -292,7 +295,6 @@ function computerChoosesSquare(board) {
 function playerOrCompChooseSquare(board) {
   while (true) {
     displayBoard(board);
-    // if (someoneWon(board)) showWinner(board);
 
     playerChoosesSquare(board);
     if (someoneWon(board) || boardFull(board)) break;
@@ -302,8 +304,6 @@ function playerOrCompChooseSquare(board) {
 
     // console.clear();
   }
-  // console.log(PLAYER_ORDER);
-  // showWinner(board);
 
   return null;
 }
@@ -320,8 +320,6 @@ function displayFinalWinner(gameWinner) {
 // main game loop
 mainGame:
 while (true) {
-  let computerWins = 0;
-  let humanWins = 0;
 
   gameGreeting();
   choosePlayerOrder();
@@ -331,36 +329,32 @@ while (true) {
 
     playerOrCompChooseSquare(board);
 
-    // if (detectWinner(board) === 'Player') {
-    //   console.log(`${detectWinner(board)} won!`);
-    //   humanWins += 1;
-    // } else if (detectWinner(board) === 'Computer') {
-    //   console.log(`${detectWinner(board)} won!`);
-    //   computerWins += 1;
-    // } else {
-    //   console.log("It's a tie!");
-    // }
-
-    // showWinner(board);
-    console.log(`User Wins: ${humanWins}\nComputer Wins: ${computerWins}`);
+    showWinner(board);
+    console.log(`User Wins: ${BEST_OF_FIVE_WINS['player']}`);
+    console.log(`Computer Wins: ${BEST_OF_FIVE_WINS['computer']}`);
 
     let winner;
-    if (humanWins > computerWins) {
+    if (BEST_OF_FIVE_WINS['player'] > BEST_OF_FIVE_WINS['computer']) {
       winner = 'Player';
     } else {
       winner = 'Computer';
     }
 
-    if (humanWins === GAMES_TO_WIN
-      || computerWins === GAMES_TO_WIN) {
+    if (BEST_OF_FIVE_WINS['player'] === GAMES_TO_WIN
+      || BEST_OF_FIVE_WINS['computer'] === GAMES_TO_WIN) {
       displayFinalWinner(winner);
       prompt('Play again? (Yes/n)');
+      let answer = rlSync.question().toLowerCase();
 
-      let answer = rlSync.question().toLowerCase()[0];
+      while (!['y', 'yes', 'n', 'no'].includes(answer)) {
+        console.log('Invalid Option');
+        prompt('Play again? (Yes/n)');
+        answer = rlSync.question().toLowerCase();
+      }
       if (answer !== 'y') break mainGame;
 
-      humanWins = 0;
-      computerWins = 0;
+      BEST_OF_FIVE_WINS['player'] = 0;
+      BEST_OF_FIVE_WINS['computer'] = 0;
 
       gameGreeting();
     }
