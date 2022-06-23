@@ -4,7 +4,7 @@ const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const PLAYER_ORDER = { first: 'player', second: 'computer' };
 const BEST_OF_FIVE_WINS = { player: 0, computer: 0 };
-const GAMES_TO_WIN = 5;
+const GAMES_TO_WIN = 3;
 const MIDDLE_SQR = '5';
 const WINNING_LINES = [
   [1, 2, 3], [4, 5, 6], [7, 8, 9],  // rows
@@ -291,18 +291,38 @@ function computerChoosesSquare(board) {
   return null;
 }
 
-// begin gameplay in correct order
+//  determine which player can make a move
+function chooseSquare(board, curPlayer) {
+  if (curPlayer === 'player') {
+    return playerChoosesSquare(board);
+  } else {
+    return computerChoosesSquare(board);
+  }
+}
+
+// alternate the current player
+function alternatePlayer(curPlayer) {
+  if (curPlayer === 'player') {
+    return 'computer';
+  } else {
+    return 'player';
+  }
+}
+
+// main gameplay function
 function playerOrCompChooseSquare(board) {
+  let currentPlayer;
+  if (PLAYER_ORDER['first'] === 'player' && emptySquares(board).length === 9) {
+    currentPlayer = 'player';
+  } else {
+    currentPlayer = 'computer';
+  }
+
   while (true) {
     displayBoard(board);
-
-    playerChoosesSquare(board);
+    chooseSquare(board, currentPlayer);
+    currentPlayer = alternatePlayer(currentPlayer);
     if (someoneWon(board) || boardFull(board)) break;
-
-    computerChoosesSquare(board);
-    if (someoneWon(board) || boardFull(board)) break;
-
-    // console.clear();
   }
 
   return null;
