@@ -4,7 +4,7 @@ const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const PLAYER_ORDER = { first: 'player', second: 'computer' };
 const BEST_OF_FIVE_WINS = { player: 0, computer: 0 };
-const GAMES_TO_WIN = 3;
+const GAMES_TO_WIN = 5;
 const MIDDLE_SQR = '5';
 const WINNING_LINES = [
   [1, 2, 3], [4, 5, 6], [7, 8, 9],  // rows
@@ -14,7 +14,6 @@ const WINNING_LINES = [
 
 // draw the board
 function displayBoard(board) {
-  // console.clear();
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}.`);
 
   console.log('');
@@ -47,15 +46,55 @@ function initializeBoard() {
 
 // initial game greeting
 function gameGreeting() {
-  // console.clear();
+  console.clear();
 
   console.log('');
   console.log('****    WELCOME    ****');
   console.log('****      TO       ****');
   console.log('****  Tic-Tac-Toe  ****');
   console.log('');
-  console.log('   - Best of Five -   ');
-  console.log('');
+
+  return null;
+}
+
+// determine if best of five game or single game
+function gameType() {
+  prompt('Do you want to play best of five? (Yes/n)');
+  let answer = rlSync.question().toLowerCase();
+
+  while (!['yes', 'y', 'no', 'n'].includes(answer)) {
+    console.log('Invalid Option');
+    prompt('Do you want to play best of five? (Yes/n)');
+    answer = rlSync.question().toLowerCase();
+  }
+
+  if (['yes', 'y'].includes(answer)) {
+    return 'best of five'
+  } else {
+    return 'single'
+  }
+}
+
+// loop only a single game
+function singleGame() {
+  while (true) {
+    let board = initializeBoard();
+
+    playerOrCompChooseSquare(board);
+    showWinner(board);
+
+    prompt('Play again? (Yes/n)');
+    let answer = rlSync.question().toLowerCase();
+
+    while (!['y', 'yes', 'n', 'no'].includes(answer)) {
+      console.log('Invalid Option');
+      prompt('Play again? (Yes/n)');
+      answer = rlSync.question().toLowerCase();
+    }
+
+    if (['no', 'n'].includes(answer)) break;
+    // if (playAgain() === 'n') break;
+  }
 
   return null;
 }
@@ -73,12 +112,10 @@ function choosePlayerOrder() {
 
   // the default is the player going first
   if (['yes', 'y'].includes(answer)) {
-    // console.clear();
     return;
   } else {
     PLAYER_ORDER['first'] = 'computer';
     PLAYER_ORDER['second'] = 'player';
-    // console.clear();
   }
 
   return null;
@@ -132,8 +169,6 @@ function someoneWon(board) {
 
 // display single match winner 
 function showWinner(board) {
-  // console.clear();
-
   if (detectWinner(board) === 'Player') {
     console.log(`${detectWinner(board)} won!`);
     BEST_OF_FIVE_WINS['player'] += 1;
@@ -156,7 +191,6 @@ function argumentExists(bool) {
 function basicElementJoin(arr, delimiter = ', ') {
   return arr.join(delimiter);
 }
-
 
 function joinWithWord(joinedString, delimiter = ', ', word = 'or') {
   let lastDelimiterIndex = joinedString.lastIndexOf(delimiter);
@@ -337,12 +371,52 @@ function displayFinalWinner(gameWinner) {
   console.log('');
 }
 
+// prompt the user to play again
+function playAgain() {
+  let winner;
+  if (BEST_OF_FIVE_WINS['player'] > BEST_OF_FIVE_WINS['computer']) {
+    winner = 'Player';
+  } else {
+    winner = 'Computer';
+  }
+
+  if (BEST_OF_FIVE_WINS['player'] === GAMES_TO_WIN
+    || BEST_OF_FIVE_WINS['computer'] === GAMES_TO_WIN) {
+    displayFinalWinner(winner);
+    prompt('Play again? (Yes/n)');
+    let answer = rlSync.question().toLowerCase();
+
+    while (!['y', 'yes', 'n', 'no'].includes(answer)) {
+      console.log('Invalid Option');
+      prompt('Play again? (Yes/n)');
+      answer = rlSync.question().toLowerCase();
+    }
+
+    if (['yes', 'y'].includes(answer)) {
+      BEST_OF_FIVE_WINS['player'] = 0;
+      BEST_OF_FIVE_WINS['computer'] = 0;
+      gameGreeting();
+      return 'y';
+    } else {
+      return 'n';
+    }
+  }
+
+  return null;
+}
+
 // main game loop
 mainGame:
 while (true) {
 
   gameGreeting();
   choosePlayerOrder();
+  let game = gameType();
+
+  if (game === 'single') {
+    singleGame();
+    break;
+  }
 
   while (true) {
     let board = initializeBoard();
@@ -353,31 +427,7 @@ while (true) {
     console.log(`User Wins: ${BEST_OF_FIVE_WINS['player']}`);
     console.log(`Computer Wins: ${BEST_OF_FIVE_WINS['computer']}`);
 
-    let winner;
-    if (BEST_OF_FIVE_WINS['player'] > BEST_OF_FIVE_WINS['computer']) {
-      winner = 'Player';
-    } else {
-      winner = 'Computer';
-    }
-
-    if (BEST_OF_FIVE_WINS['player'] === GAMES_TO_WIN
-      || BEST_OF_FIVE_WINS['computer'] === GAMES_TO_WIN) {
-      displayFinalWinner(winner);
-      prompt('Play again? (Yes/n)');
-      let answer = rlSync.question().toLowerCase();
-
-      while (!['y', 'yes', 'n', 'no'].includes(answer)) {
-        console.log('Invalid Option');
-        prompt('Play again? (Yes/n)');
-        answer = rlSync.question().toLowerCase();
-      }
-      if (answer !== 'y') break mainGame;
-
-      BEST_OF_FIVE_WINS['player'] = 0;
-      BEST_OF_FIVE_WINS['computer'] = 0;
-
-      gameGreeting();
-    }
+    if (playAgain() === 'n') break mainGame;
   }
 }
 
