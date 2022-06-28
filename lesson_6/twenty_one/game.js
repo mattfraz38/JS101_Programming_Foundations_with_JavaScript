@@ -13,25 +13,26 @@ const cards = {
 };
 const shuffledCards = [];
 
+// compare two arrays return true if they contain the same same values
 function arraysEqual(arr1, arr2) {
   return arr1.every((el, idx) => el === arr2[idx]);
 }
 
-function shuffle(obj) {
-  let suits = Object.keys(obj);
-  let cardValues = Object.values(obj);
-  let totalCards = cardValues.map(el => el.length).reduce((accu, cur) => accu + cur, 0);
+// check for duplicates in the shuffled cards array
+function shuffledCardsContainDuplicates(shuffledCardsArr, randCard) {
+  return shuffledCardsArr.some(el => arraysEqual(el, randCard));
+}
 
+// add a cards to the shuffled cards array
+function addCardtoShuffledDeck(totalCards, suits) {
   for (totalCards; totalCards > 0; --totalCards) {
     let randomSuitIdx = Math.floor(Math.random() * suits.length);
     let randomSuit = suits[randomSuitIdx];
     let randomSetValIdx = Math.floor(Math.random() * cards['Hearts'].length);
     let randomSetVal = cards[randomSuit][randomSetValIdx];
-
     let randomCard = [randomSuit, randomSetVal];
 
-
-    while (shuffledCards.some(el => arraysEqual(el, randomCard))) {
+    while (shuffledCardsContainDuplicates(shuffledCards, randomCard)) {
       randomSuitIdx = Math.floor(Math.random() * suits.length);
       randomSuit = suits[randomSuitIdx];
       randomSetValIdx = Math.floor(Math.random() * cards['Hearts'].length);
@@ -44,23 +45,18 @@ function shuffle(obj) {
   }
 }
 
-shuffle(cards);
+// create a new shuffled deck of 52 cards
+function shuffle(obj) {
+  let suits = Object.keys(obj);
+  let cardValues = Object.values(obj);
+  let totalCards = cardValues.map(el => el.length)
+    .reduce((accu, cur) => accu + cur, 0);
 
-let fiveRandCards = [];
-
-for (let i = 0; i < 5; ++i) {
-  let randCard = shuffledCards[Math.floor(Math.random() * 52)];
-
-  while (fiveRandCards.some(el => arraysEqual(fiveRandCards, randCard))) {
-    randCard = shuffledCards[Math.floor(Math.random() * 52)];
-  }
-
-  fiveRandCards.push(randCard);
+  addCardtoShuffledDeck(totalCards, suits);
 }
 
-fiveRandCards.forEach(card => {
-  console.log(`Your card is: ${card[1]} of ${card[0]}`);
-});
+shuffle(cards);
+console.log(shuffledCards);
 
 // ************ TESTING ************
 // console.log(shuffledCards);
