@@ -15,7 +15,7 @@
 // if dealer busts player wins
 
 // compare cars and declare winner
-
+const rlSync = require('readline-sync');
 const cards = {
   Hearts: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'],
   Spades: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'],
@@ -72,13 +72,12 @@ function shuffle(obj) {
 
 // determine initial card hands
 function initalDealing(shuffledCards) {
-  for (let i = 0; i < 4; ++i) {
-    if (i % 2 === 0) {
-      dealerCards.push(shuffledCards[i]);
-    } else {
-      playerCards.push(shuffledCards[i]);
-    }
+  for (let i = 0; i < 2; ++i) {
+    dealerCards.push(shuffledCards.shift());
+    playerCards.push(shuffledCards.shift());
   }
+
+  displayHands(dealerCards, playerCards);
 }
 
 // calculate the card values and return the total
@@ -100,14 +99,12 @@ function calculateHandTotal(cards) {
     if (total > 21) total -= 10;
   });
 
-  console.log(cardVals);
-  console.log(total);
+  return total;
 }
-
 
 // log players cards
 function displayPlayerCards(cards) {
-  console.log("Player's Hand:");
+  console.log(`Player's Hand: ${calculateHandTotal(cards)}`);
   cards.forEach(el => {
     console.log(`\t${el[1]} of ${el[0]}`);
   });
@@ -115,7 +112,7 @@ function displayPlayerCards(cards) {
 
 // display dealers cards
 function displayDealerCards(cards) {
-  console.log("Dealer's Hand:");
+  console.log(`Dealer's Hand: ${'***' || calculateHandTotal(cards)}`);
 
   cards.forEach((el, idx) => {
     if (idx === cards.length - 1) {
@@ -126,13 +123,53 @@ function displayDealerCards(cards) {
   });
 }
 
+// display cards with totals totals
+function displayHands(dCards, pCards) {
+  displayDealerCards(dCards);
+  console.log();
+  displayPlayerCards(pCards);
+  // calculateHandTotal(pCards);
+}
+
+// ask player to hit or stay
+function hitOrStay() {
+  console.log('');
+  console.log('Do you want to hit or stay?');
+  let answer = rlSync.prompt().toLowerCase();
+
+  while (!['hit', 'h', 'stay', 's'].includes(answer)) {
+    console.log('Invalid input: Hit or stay');
+    answer = rlSync.prompt().toLowerCase();
+  }
+  return answer;
+}
+
+// add cards to player hand
+// *** NEED ACCOUNT FOR IF PLAYER INITIALLY DEALT 21
+function playerHit(cards) {
+  playerCards.push(cards.shift());
+}
+
 shuffle(cards);
 console.log(shuffledCards);
-initalDealing(shuffledCards);
 
-displayDealerCards(dealerCards);
-displayPlayerCards(playerCards);
-calculateHandTotal(playerCards);
+console.clear();
+while (true) {
+  initalDealing(shuffledCards);
+  let hitOrStayAnswer = hitOrStay();
+
+  while (['hit', 'h'].includes(hitOrStayAnswer)) {
+    playerHit(shuffledCards);
+    console.clear();
+    displayHands(dealerCards, playerCards);
+    hitOrStayAnswer = hitOrStay();
+  }
+
+  console.log(`Dealer: ${calculateHandTotal(dealerCards)}`);
+  console.log(`Player: ${calculateHandTotal(playerCards)}`);
+  break;
+}
+
 
 // ************ TESTING ************
 // console.log(shuffledCards);
