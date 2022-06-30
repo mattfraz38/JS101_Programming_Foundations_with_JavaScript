@@ -5,6 +5,17 @@
 // - 3 royalty cards each worth 10 (jack, queen, king)
 // - 1 ace card with the value of 1 or 11 depending on the situation
 
+// deal cards to the player and dealer
+// player turn: hit or stay
+// - repeat until stay or bust
+// if player busts dealer wins
+
+// dealer turn: hit or stay
+// - repeat until total >= 17
+// if dealer busts player wins
+
+// compare cars and declare winner
+
 const cards = {
   Hearts: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'],
   Spades: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'],
@@ -12,6 +23,8 @@ const cards = {
   Clubs: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace']
 };
 const shuffledCards = [];
+const dealerCards = [];
+const playerCards = [];
 
 // compare two arrays return true if they contain the same same values
 function arraysEqual(arr1, arr2) {
@@ -24,21 +37,23 @@ function shuffledCardsContainDuplicates(shuffledCardsArr, randCard) {
 }
 
 // add a cards to the shuffled cards array
-function addCardtoShuffledDeck(totalCards, suits) {
+function addCardToShuffledDeck(totalCards, suits) {
   for (totalCards; totalCards > 0; --totalCards) {
-    let randomSuitIdx = Math.floor(Math.random() * suits.length);
+    let totalCardSuits = suits.length;
+    let randomSuitIdx = Math.floor(Math.random() * totalCardSuits);
     let randomSuit = suits[randomSuitIdx];
-    let randomSetValIdx = Math.floor(Math.random() * cards['Hearts'].length);
-    let randomSetVal = cards[randomSuit][randomSetValIdx];
-    let randomCard = [randomSuit, randomSetVal];
+    let totalCardsInSuit = cards[randomSuit].length;
+    let randomCardValIdx = Math.floor(Math.random() * totalCardsInSuit);
+    let randomCardVal = cards[randomSuit][randomCardValIdx];
+    let randomCard = [randomSuit, randomCardVal];
 
     while (shuffledCardsContainDuplicates(shuffledCards, randomCard)) {
-      randomSuitIdx = Math.floor(Math.random() * suits.length);
+      randomSuitIdx = Math.floor(Math.random() * totalCardSuits);
       randomSuit = suits[randomSuitIdx];
-      randomSetValIdx = Math.floor(Math.random() * cards['Hearts'].length);
-      randomSetVal = cards[randomSuit][randomSetValIdx];
+      randomCardValIdx = Math.floor(Math.random() * totalCardsInSuit);
+      randomCardVal = cards[randomSuit][randomCardValIdx];
 
-      randomCard = [randomSuit, randomSetVal];
+      randomCard = [randomSuit, randomCardVal];
     }
 
     shuffledCards.push(randomCard);
@@ -52,11 +67,72 @@ function shuffle(obj) {
   let totalCards = cardValues.map(el => el.length)
     .reduce((accu, cur) => accu + cur, 0);
 
-  addCardtoShuffledDeck(totalCards, suits);
+  addCardToShuffledDeck(totalCards, suits);
+}
+
+// determine initial card hands
+function initalDealing(shuffledCards) {
+  for (let i = 0; i < 4; ++i) {
+    if (i % 2 === 0) {
+      dealerCards.push(shuffledCards[i]);
+    } else {
+      playerCards.push(shuffledCards[i]);
+    }
+  }
+}
+
+// calculate the card values and return the total
+function calculateHandTotal(cards) {
+  let cardVals = cards.map(el => el[1]);
+  let total = 0;
+
+  cardVals.forEach(val => {
+    if (['Jack', 'Queen', 'King'].includes(val)) {
+      total += 10;
+    } else if (val === 'Ace') {
+      total += 11;
+    } else {
+      total += Number(val);
+    }
+  });
+
+  cardVals.filter(val => val === 'Ace').forEach(_ => {
+    if (total > 21) total -= 10;
+  });
+
+  console.log(cardVals);
+  console.log(total);
+}
+
+
+// log players cards
+function displayPlayerCards(cards) {
+  console.log("Player's Hand:");
+  cards.forEach(el => {
+    console.log(`\t${el[1]} of ${el[0]}`);
+  });
+}
+
+// display dealers cards
+function displayDealerCards(cards) {
+  console.log("Dealer's Hand:");
+
+  cards.forEach((el, idx) => {
+    if (idx === cards.length - 1) {
+      console.log('\tHidden Card');
+    } else {
+      console.log(`\t${el[1]} of ${el[0]}`);
+    }
+  });
 }
 
 shuffle(cards);
 console.log(shuffledCards);
+initalDealing(shuffledCards);
+
+displayDealerCards(dealerCards);
+displayPlayerCards(playerCards);
+calculateHandTotal(playerCards);
 
 // ************ TESTING ************
 // console.log(shuffledCards);
