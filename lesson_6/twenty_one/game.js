@@ -1,20 +1,3 @@
-// initialize a deck of cards (52 cards)
-// a deck contains 4 suits (hearts, spades, diamonds, and clubs)
-// each suit can have:
-// - 8 face-value cards (2-10)
-// - 3 royalty cards each worth 10 (jack, queen, king)
-// - 1 ace card with the value of 1 or 11 depending on the situation
-
-// deal cards to the player and dealer
-// player turn: hit or stay
-// - repeat until stay or bust
-// if player busts dealer wins
-
-// dealer turn: hit or stay
-// - repeat until total >= 17
-// if dealer busts player wins
-
-// compare cars and declare winner
 const rlSync = require('readline-sync');
 const CARDS = {
   Hearts: ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'],
@@ -141,7 +124,7 @@ function displayHands(dCards, pCards) {
 }
 
 // perform dealer hit or stay
-function dealerHitOrStay(dCards, pCards) {
+function dealerTurn(dCards, pCards) {
   let dealerHand = calculateHandTotal(dCards);
   while (dealerHand < 17) {
     DEALER_CARDS.push(SHUFFLED_CARDS.shift());
@@ -152,6 +135,8 @@ function dealerHitOrStay(dCards, pCards) {
       console.log('Dealer Bust!');
     }
   }
+
+  displayHands(dCards, pCards);
 }
 
 // ask player to hit or stay
@@ -165,6 +150,10 @@ function hitOrStayQuestion() {
     answer = rlSync.prompt().toLowerCase();
   }
 
+  if (['stay', 's']) {
+    setDealerAsCurrentPlayer(answer);
+  }
+
   return answer;
 }
 
@@ -173,51 +162,9 @@ function playerHit(cards) {
   PLAYER_CARDS.push(cards.shift());
 }
 
-// determine if player busts 
-function playerBust(cards) {
-  let playerHand = calculateHandTotal(cards);
-  if (playerHand > 21) return true;
-}
-
-// determine if player gets 21
-function playerHasTwentyOne(cards) {
-  let playerHand = calculateHandTotal(cards);
-  if (playerHand === 21) return true;
-}
-
-function determineWinner(dCards, pCards) {
-  let dealerTotal = calculateHandTotal(dCards);
-  let playerTotal = calculateHandTotal(pCards);
-
-  if ((dealerTotal > 21) && (playerTotal < 21)) {
-    console.log('Congratulations! Player Win!')
-  } else if ((dealerTotal < 21) && (playerTotal > 21)) {
-    console.log('Dealer Win');
-  } else if ((dealerTotal > playerTotal) && (dealerTotal <= 21)) {
-    console.log('Dealer Win');
-  } else if ((playerTotal > dealerTotal) && (playerTotal <= 21)) {
-    console.log('Congratulations! Player Win!');
-  } else {
-    console.log('Push');
-  }
-}
-
-while (true) {
-  console.clear();
-  shuffle(CARDS);
-  initalDealing(SHUFFLED_CARDS);
-  if (playerHasTwentyOne(PLAYER_CARDS)) {
-    console.log('Twenty-One!');
-    break;
-  }
-
-  let hitOrStayAnswer = hitOrStayQuestion();
-
-  if (hitOrStayAnswer === 'stay' || hitOrStayAnswer === 's') {
-    CURRENT_PLAYER[0] = 'dealer';
-  }
-
-  while (['hit', 'h'].includes(hitOrStayAnswer)) {
+// player continues to hit
+function playerTurn(makeMoveResponse) {
+  while (['hit', 'h'].includes(makeMoveResponse)) {
     playerHit(SHUFFLED_CARDS);
     console.clear();
     displayHands(DEALER_CARDS, PLAYER_CARDS);
@@ -228,40 +175,75 @@ while (true) {
       console.log('Twenty-One!');
       break;
     }
-    hitOrStayAnswer = hitOrStayQuestion();
-
-    if (hitOrStayAnswer === 'stay' || hitOrStayAnswer === 's') {
-      CURRENT_PLAYER[0] = 'dealer';
-    }
+    makeMoveResponse = hitOrStayQuestion();
+    setDealerAsCurrentPlayer(makeMoveResponse);
   }
-
-  dealerHitOrStay(DEALER_CARDS, PLAYER_CARDS);
-  displayHands(DEALER_CARDS, PLAYER_CARDS);
-  console.log(`Dealer: ${calculateHandTotal(DEALER_CARDS)}`);
-  console.log(`Player: ${calculateHandTotal(PLAYER_CARDS)}`);
-
-  determineWinner(DEALER_CARDS, PLAYER_CARDS);
-  break;
 }
 
+// determine if player busts
+function playerBust(cards) {
+  let playerHand = calculateHandTotal(cards);
+  if (playerHand > 21) return true;
 
-// ************ TESTING ************
-// console.log(shuffledCards);
-// console.log(shuffledCards.length);
+  return null;
+}
 
-// totalSpades = 0;
-// totalHearts = 0;
-// totalDiamonds = 0;
-// totalClubs = 0;
+// determine if player gets 21
+function playerHasTwentyOne(cards) {
+  let playerHand = calculateHandTotal(cards);
+  if (playerHand === 21) return true;
 
-// shuffledCards.forEach(el => {
-//   if (el[0] === 'Spades') ++totalSpades;
-//   if (el[0] === 'Hearts') ++totalHearts;
-//   if (el[0] === 'Diamonds') ++totalDiamonds;
-//   if (el[0] === 'Clubs') ++totalClubs;
-// });
+  return null;
+}
 
-// console.log(totalSpades, totalHearts, totalDiamonds, totalClubs);
+// change current player
+function setDealerAsCurrentPlayer(hitResponse) {
+  if (['stay', 's'].includes(hitResponse)) {
+    CURRENT_PLAYER[0] = 'dealer';
+  }
+}
 
-// console.log(shuffledCards.some(el => arraysEqual(el, ['Diamonds', '4'])));
-// console.log(shuffledCards[0]);
+// determine and log winner to console
+function determineWinner(dCards, pCards) {
+  let dealerTotal = calculateHandTotal(dCards);
+  let playerTotal = calculateHandTotal(pCards);
+
+  if ((dealerTotal > 21) && (playerTotal < 21)) {
+    console.log('Congratulations! Player Win!');
+  } else if ((dealerTotal < 21) && (playerTotal > 21)) {
+    console.log('Bust! Dealer Win');
+  } else if ((dealerTotal > playerTotal) && (dealerTotal <= 21) ||
+    (dealerTotal > 21 && playerTotal > 21)) {
+    console.log('Dealer Win');
+  } else if ((playerTotal > dealerTotal) && (playerTotal <= 21)) {
+    console.log('Congratulations! Player Win!');
+  } else {
+    console.log('Push');
+  }
+}
+
+// display final result 
+function finalResult() {
+  console.log(`Dealer: ${calculateHandTotal(DEALER_CARDS)}`);
+  console.log(`Player: ${calculateHandTotal(PLAYER_CARDS)}`);
+  determineWinner(DEALER_CARDS, PLAYER_CARDS);
+}
+
+while (true) {
+  console.clear();
+  shuffle(CARDS);
+  initalDealing(SHUFFLED_CARDS);
+
+  if (playerHasTwentyOne(PLAYER_CARDS)) {
+    console.log('Twenty-One!');
+    break;
+  }
+
+  let hitOrStayAnswer = hitOrStayQuestion();
+
+  playerTurn(hitOrStayAnswer);
+  dealerTurn(DEALER_CARDS, PLAYER_CARDS);
+
+  finalResult();
+  break;
+}
