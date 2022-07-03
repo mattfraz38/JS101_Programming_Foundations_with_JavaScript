@@ -56,9 +56,11 @@ function shuffle(obj) {
 
 // determine initial card hands
 function initalDealing(shuffledCards) {
-  for (let i = 0; i < 2; ++i) {
+  let counter = 0;
+  while (counter < 2) {
     DEALER_CARDS.push(shuffledCards.shift());
     PLAYER_CARDS.push(shuffledCards.shift());
+    counter++;
   }
 
   displayHands(DEALER_CARDS, PLAYER_CARDS);
@@ -131,9 +133,6 @@ function dealerTurn(dCards, pCards) {
     dealerHand = calculateHandTotal(dCards);
 
     displayHands(dCards, pCards);
-    if (playerBust(dCards)) {
-      console.log('Dealer Bust!');
-    }
   }
 
   displayHands(dCards, pCards);
@@ -150,10 +149,6 @@ function hitOrStayQuestion() {
     answer = rlSync.prompt().toLowerCase();
   }
 
-  if (['stay', 's']) {
-    setDealerAsCurrentPlayer(answer);
-  }
-
   return answer;
 }
 
@@ -166,34 +161,31 @@ function playerHit(cards) {
 function playerTurn(makeMoveResponse) {
   while (['hit', 'h'].includes(makeMoveResponse)) {
     playerHit(SHUFFLED_CARDS);
-    console.clear();
     displayHands(DEALER_CARDS, PLAYER_CARDS);
     if (playerBust(PLAYER_CARDS)) {
-      console.log('Bust!');
+      CURRENT_PLAYER[0] = 'dealer';
+      displayHands(DEALER_CARDS, PLAYER_CARDS);
       break;
     } else if (playerHasTwentyOne(PLAYER_CARDS)) {
-      console.log('Twenty-One!');
+      CURRENT_PLAYER[0] = 'dealer';
+      displayHands(DEALER_CARDS, PLAYER_CARDS);
       break;
     }
     makeMoveResponse = hitOrStayQuestion();
-    setDealerAsCurrentPlayer(makeMoveResponse);
   }
+  setDealerAsCurrentPlayer(makeMoveResponse);
 }
 
 // determine if player busts
 function playerBust(cards) {
   let playerHand = calculateHandTotal(cards);
-  if (playerHand > 21) return true;
-
-  return null;
+  return playerHand > 21;
 }
 
 // determine if player gets 21
 function playerHasTwentyOne(cards) {
   let playerHand = calculateHandTotal(cards);
-  if (playerHand === 21) return true;
-
-  return null;
+  return playerHand === 21;
 }
 
 // change current player
@@ -208,21 +200,23 @@ function determineWinner(dCards, pCards) {
   let dealerTotal = calculateHandTotal(dCards);
   let playerTotal = calculateHandTotal(pCards);
 
-  if ((dealerTotal > 21) && (playerTotal < 21)) {
-    console.log('Congratulations! Player Win!');
-  } else if ((dealerTotal < 21) && (playerTotal > 21)) {
+  if ((dealerTotal > 21) && (playerTotal <= 21)) {
+    console.log('Dealer Bust! Player Win!');
+  } else if ((dealerTotal <= 21) && (playerTotal > 21)) {
     console.log('Bust! Dealer Win');
-  } else if ((dealerTotal > playerTotal) && (dealerTotal <= 21) ||
-    (dealerTotal > 21 && playerTotal > 21)) {
+  } else if ((dealerTotal > playerTotal) && (dealerTotal <= 21)) {// ||
+    //(dealerTotal > 21 && playerTotal <= 21)) {
     console.log('Dealer Win');
   } else if ((playerTotal > dealerTotal) && (playerTotal <= 21)) {
     console.log('Congratulations! Player Win!');
+  } else if ((dealerTotal > 21) && (playerTotal > 21)) {
+    console.log('Both Bust');
   } else {
     console.log('Push');
   }
 }
 
-// display final result 
+// display final result
 function finalResult() {
   console.log(`Dealer: ${calculateHandTotal(DEALER_CARDS)}`);
   console.log(`Player: ${calculateHandTotal(PLAYER_CARDS)}`);
@@ -233,11 +227,6 @@ while (true) {
   console.clear();
   shuffle(CARDS);
   initalDealing(SHUFFLED_CARDS);
-
-  if (playerHasTwentyOne(PLAYER_CARDS)) {
-    console.log('Twenty-One!');
-    break;
-  }
 
   let hitOrStayAnswer = hitOrStayQuestion();
 
