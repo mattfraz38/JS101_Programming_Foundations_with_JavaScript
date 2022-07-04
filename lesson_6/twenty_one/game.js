@@ -10,6 +10,33 @@ const SHUFFLED_CARDS = [];
 const DEALER_CARDS = [];
 const PLAYER_CARDS = [];
 
+// greet user to game
+function greeting() {
+  console.clear();
+  console.log('*****************************');
+  console.log('*** Welcome to Twenty-One ***');
+  console.log('*****************************');
+  console.log('');
+}
+
+// ask for game type
+function gameType() {
+  console.log('Play best-of-five? (Y/no)');
+  let answer = rlSync.prompt().toLowerCase();
+
+  while (!['yes', 'y', 'no', 'n'].includes(answer)) {
+    console.log('Invalid Input');
+    console.log('Play best-of-five? (Y/no)');
+    answer = rlSync.prompt().toLowerCase();
+  }
+
+  if (['yes', 'y'].includes(answer)) {
+    return 'best-of-five';
+  } else {
+    return 'single';
+  }
+}
+
 // compare two arrays return true if they contain the same same values
 function arraysEqual(arr1, arr2) {
   return arr1.every((el, idx) => el === arr2[idx]);
@@ -63,6 +90,7 @@ function initalDealing(shuffledCards) {
     counter++;
   }
 
+  console.clear();
   displayHands(DEALER_CARDS, PLAYER_CARDS);
 }
 
@@ -204,8 +232,7 @@ function determineWinner(dCards, pCards) {
     console.log('Dealer Bust! Player Win!');
   } else if ((dealerTotal <= 21) && (playerTotal > 21)) {
     console.log('Bust! Dealer Win');
-  } else if ((dealerTotal > playerTotal) && (dealerTotal <= 21)) {// ||
-    //(dealerTotal > 21 && playerTotal <= 21)) {
+  } else if ((dealerTotal > playerTotal) && (dealerTotal <= 21)) {
     console.log('Dealer Win');
   } else if ((playerTotal > dealerTotal) && (playerTotal <= 21)) {
     console.log('Congratulations! Player Win!');
@@ -223,9 +250,8 @@ function finalResult() {
   determineWinner(DEALER_CARDS, PLAYER_CARDS);
 }
 
-while (true) {
-  console.clear();
-  shuffle(CARDS);
+// game logic
+function playGame() {
   initalDealing(SHUFFLED_CARDS);
 
   let hitOrStayAnswer = hitOrStayQuestion();
@@ -234,5 +260,52 @@ while (true) {
   dealerTurn(DEALER_CARDS, PLAYER_CARDS);
 
   finalResult();
-  break;
+}
+
+// clear card values
+function clearAllCards() {
+  SHUFFLED_CARDS.length = 0;
+  PLAYER_CARDS.length = 0;
+  DEALER_CARDS.length = 0;
+}
+
+while (true) {
+  console.log(SHUFFLED_CARDS);
+  console.log(SHUFFLED_CARDS.length);
+  greeting();
+  let gameCount = 0;
+  let game = gameType();
+
+  while (true) {
+    // console.clear();
+    shuffle(CARDS);
+
+    playGame();
+
+    console.log(`gameCount: ${gameCount}`);
+    console.log(`gameType: ${game}`);
+
+    if (game === 'single') break;
+    if ((game === 'best-of-five') && (gameCount >= 4)) {
+      break;
+    } else {
+      clearAllCards();
+      gameCount++;
+    }
+  }
+
+  console.log('Play again?');
+  let answer = rlSync.prompt().toLowerCase();
+
+  while (!['yes', 'y', 'no', 'n'].includes(answer)) {
+    console.log('Invalid Input');
+    console.log('Play again?');
+    answer = rlSync.prompt().toLowerCase();
+  }
+
+  clearAllCards();
+  if (['no', 'n'].includes(answer)) {
+    console.log('Goodbye');
+    break;
+  }
 }
