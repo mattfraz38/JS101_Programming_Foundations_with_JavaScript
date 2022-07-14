@@ -3,7 +3,7 @@
 const myArr = ['A', 'B', 'C'];
 
 function logElem(myArr) {
-  console.log(myArr);//[3]);
+  console.log(myArr[3]);
 }
 
 logElem();
