@@ -82,7 +82,7 @@ console.log(anagramDifference("codewars", "hackerrank")); // 10
 //    ** find the first matching char from arr1 in arr2 and remove
 //      - if there are maching chars remove both
 //    continue until no more matching chars in both strings
-//    - return the length of arr1 + arr2;¥
+//    - return the length of arr1 + arr2;
 // 5. if not (remove - continue, not remove) the element and add to a counter variable 
 // 6. else continue to the next iteration
 // 7. return the counter value
