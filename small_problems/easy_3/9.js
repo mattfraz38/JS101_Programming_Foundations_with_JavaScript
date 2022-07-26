@@ -69,6 +69,11 @@ function isUpperCaseLetter(char) {
   return char >= 'A' && char <= 'Z';
 }
 
+// regex version
+// function cleanUp(text) {
+//  return text.replace(/[^a-z]/gi, " ").replace(/\s+/gi, " ");
+// }
+
 console.log(cleanUp("hello"));                     // "hello"
 console.log(cleanUp("Greetings All"));             // "Greetings All"
 console.log(cleanUp("    this is a test   "));              // "    this is a test   "
