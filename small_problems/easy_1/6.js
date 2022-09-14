@@ -2,7 +2,7 @@ const rlSync = require('readline-sync');
 
 // Calcultate sum
 function sum(num) {
-  const range = []
+  const range = [];
 
   for (let i = 1; i < num + 1; ++i) {
     range.push(i);
@@ -17,7 +17,7 @@ function sum(num) {
 
 // Calcultate sum
 function product(num) {
-  const range = []
+  const range = [];
 
   for (let i = 1; i < num + 1; ++i) {
     range.push(i);
