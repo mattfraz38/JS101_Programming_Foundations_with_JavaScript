@@ -1,14 +1,3 @@
-// Leap Years (Part 2)
-// This is a continuation of the previous exercise.
-
-// The British Empire adopted the Gregorian Calendar in 1752, which
-// was a leap year. Prior to 1752, they used the Julian Calendar.
-// Under the Julian Calendar, leap years occur in any year that
-// is evenly divisible by 4.
-
-// Using this information, update the function from the previous
-// exercise to determine leap years both before and after 1752.
-
 function isLeapYear(year) {
   if (year < 1752) {
     return console.log(year % 4 === 0);
@@ -22,7 +11,6 @@ function isLeapYear(year) {
 }
 
 // Examples:
-
 isLeapYear(2016);      // true
 isLeapYear(2015);      // false
 isLeapYear(2100);      // false
@@ -36,3 +24,14 @@ isLeapYear(1700);      // true
 isLeapYear(1);         // false
 isLeapYear(100);       // true
 isLeapYear(400);       // true
+
+/*
+  On line 1 a function isLeapYear is declared that takes one argument through it's year parameter.
+  Within the function block, on line 2, an if statement checks if year is less than 1752. If this evaluates
+  to true, on line 3 the result of the expression year % 4 is strictly equal to 0 is logged to the console
+  and returned from the function. Else if line 2 evaluates to false, if on line 4, year % 400 is strictly equal
+  to 0 evaluates to true, true is logged to the console and returned from the function on line 5. Else if line 4
+  evaluates to false, on line 6, if year % 100 is strictly equal to zero evaluates to 0, false is logged to the 
+  console and returned from the function on line 7. Otherwise on line 9, the evaluation of year % 4 is strictly 
+  equal to 0 is logged to the console and returned from the function.
+*/

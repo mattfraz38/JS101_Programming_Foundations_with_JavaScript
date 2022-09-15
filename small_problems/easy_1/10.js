@@ -1,34 +1,3 @@
-// Multiples of 3 and 5
-// Write a function that computes the sum of all numbers between 1
-// and some other number, inclusive, that are multiples of 3 or 5.
-// For instance, if the supplied number is 20, the result should be
-// 98(3 + 5 + 6 + 9 + 10 + 12 + 15 + 18 + 20).
-
-// You may assume that the number passed in is an integer greater
-// than 1.
-
-/*
-- INPUTS:
-  - one positive integer greater than 1
-
-- OUTPUTS:
-  - a number value which is the sum of all numbers between 1 and the input number that are multiples 3 and 5
-
-- RULES:
-  - input needs to be a number
-  - result should be the sum of all multiples
-  - assume that the number passed in is an integer greater than 1
-
-- DATA STRUCTURES:
-  - number
-
--ALGORITHM:
-  - define a result value and set to 0
-  - loop through all values from 1 to and including the input number
-    - if the current iteration value is a multiple of 3 or 5 add the value to the result variable
-  - return result
-  */
-
 function multisum(num) {
   let result = 0;
 
@@ -48,11 +17,13 @@ console.log(multisum(10));      // 33
 console.log(multisum(1000));    // 234168
 
 /*
-Consider writing an additional function to extract thedivisor check
-
-function isMultiple(number, divisor) {
-  return number % divisor === 0;
-}
-
-This can add readability to the code
+  On line 1 a function multisum is declared that takes one argument through it's num parameter.
+  Within the function block on line 2, a local variable result is declared and initialized with the
+  number 0. Next, a for loop begins with one local variable i initialized with the number 1.
+  Inside the for loop block on line 5, an if statement checks if the current iteration value i % 3
+  evaluates to being strictly equal to 0 or if the current iteration value % 5 evaluates to being strictly
+  equal to 0. If either of theses expressions evalueates to true, on line 6 the current iteration value of i
+  is added to the result variable. This type of iteration will continue while the value of i is less than
+  or equal to the value of num and will increment by 1 each iteration. After the for loop, on line 10 the value
+  of result is returned from the function.
 */

@@ -1,30 +1,3 @@
-/*
-UTF-16 String Value
-Write a function that determines and returns the UTF-16 string value of a string passed in as an argument. The UTF-16 string value is the sum of the UTF-16 values of every character in the string. (You may use String.prototype.charCodeAt() to determine the UTF-16 value of a character.)
-*/
-
-/*
-INPUT:
-  - one string
-
-OUTPUT:
-  - one number
-
-RULES:
-  - should return a number which is the result of adding the UTF-16 string value of each character of the string
-  - return 0 if the input is an empty string
-
-DATA STRUCTURES:
-  - number
-
-ALGORITHM:
-  - define a result variable and set it to 0;
-  - if the string length is 0 return 0
-  - loop through each char of a string from 0 to the length of the string
-    - add the UTF-16 string value to the result variable
-  - return the result variable
-*/
-
 function utf16Value(str) {
   let result = 0;
 
@@ -47,3 +20,14 @@ console.log(utf16Value(''));                   // 0
 const OMEGA = "\u03A9";             // UTF-16 character 'Ω' (omega)
 console.log(utf16Value(OMEGA));                  // 937
 console.log(utf16Value(OMEGA + OMEGA + OMEGA));  // 2811
+
+/*
+  On line 1 the function utf16Value is declared that takes one string argument through it's str parameter.
+  Within the function, on line 2 a local variable result is declared and initialized with the number 0;
+  On line 4 a for loop begins with one local variable i that is initialized with the number 0. The for loop
+  will check if the current iteraton value of i is less than the value of the str length property at the start
+  of each iteration. Within the for loop block, on line 5 the String.prototype.charCodeAt()
+  method with the value of the current i variable passed in as an argument is called on str. The result of this
+  evaluation added to result. At the end of each iteration the value of i is incremented by 1. After the for
+  loop on oine 8, the result value is returned as a number.
+*/
