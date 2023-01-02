@@ -1,30 +1,5 @@
-/*
-  Combine Two Lists
-  
-  QUESTIONS:
-  INPUT:
-    - two arrays
-  OUTPUT:
-    - one array
-  RULES:
-    - given two array arguments, combine both array alternating between inputs
-      arr1 el, arr2 el, arr1 el, arr2 el, etc.
-    - both arrays have valid inputs (not empty)
-    - both arrays are the same size
-  DATA STRUCTURES:
-    - array
-  ALGORITHM:
-    - create a new array with the size equal to the size of both array inputs
-    - iterate over the newly created array
-      - if the current iteration index is even
-        - reassign the current iteration element with the value of the first array argument 
-      - else if the current iteration index is odd
-        - reassign the current iteration element with the value of the second array argument
-    - return the new array
-*/
-
 const interleave = (arr1, arr2) => {
-  return result = [...arr1, ...arr2].map((el, idx) => {
+  return result = [...arr1, ...arr2].map((_, idx) => {
     if (idx % 2 === 0) {
       return arr1.shift();
     } else {
@@ -34,6 +9,24 @@ const interleave = (arr1, arr2) => {
 };
 
 console.log(interleave([1, 2, 3], ['a', 'b', 'c']));    // [1, "a", 2, "b", 3, "c"])
+
+/*
+  On line 1 we create a function expression and assign it to the constant
+  variable 'interleave' that takes two arguments through it's 'arr1' and 
+  'arr2' parameters.
+  Within the 'interleave' body 'arr1' and 'arr2' are deconstructed with 
+  the spread operator and call the 'map' function.
+  Within the 'map' function if the 'idx' of the current iteration is 
+  even then the 'shift' method is called on 'arr1', returned from 'map'
+  and stored in the array object which is stored in
+  the 'result' variable. If the 'idx' of the current iteration is not
+  even then the 'shift' method is called on 'arr2', returned from 'map'
+  and stored in the array object which is stored in
+  the 'result' variable.
+  After all references to the 'arr1' and 'arr2' values have been sorted
+  and stored, 'result' is returned.
+*/
+
 
 /*
   Optional Solution

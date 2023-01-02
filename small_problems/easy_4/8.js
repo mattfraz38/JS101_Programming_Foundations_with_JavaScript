@@ -34,11 +34,9 @@ const wordSizes = sentence => {
   words.forEach(word => {
     let wordLength = word.length;
 
-    // line 37 doesn't work - why?
-    // if (Object.keys(wordSizesObj).includes(wordLength)) {
-    // Both lines 39 and 40 work
+    // Both lines 38 and 39 work
+    // if (wordSizesObj.hasOwnProperty(wordLength)) {
     if (!wordSizesObj[wordLength]) {
-      // if (wordSizesObj.hasOwnProperty(wordLength)) {
       wordSizesObj[wordLength] = 0;
     }
 

@@ -76,5 +76,5 @@ function isUpperCaseLetter(char) {
 
 console.log(cleanUp("hello"));                     // "hello"
 console.log(cleanUp("Greetings All"));             // "Greetings All"
-console.log(cleanUp("    this is a test   "));              // "    this is a test   "
+console.log(cleanUp("    this is a test   "));     // "    this is a test   "
 console.log(cleanUp("---what's my +*& line?"));    // " what s my line "
